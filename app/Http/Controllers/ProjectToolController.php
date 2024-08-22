@@ -12,7 +12,7 @@ class ProjectToolController extends Controller
      */
     public function index()
     {
-        //
+        dd('hello');
     }
 
     /**

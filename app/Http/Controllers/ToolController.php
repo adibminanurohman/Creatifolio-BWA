@@ -12,7 +12,7 @@ class ToolController extends Controller
      */
     public function index()
     {
-        //
+        dd('hello');
     }
 
     /**
