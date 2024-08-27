@@ -64,8 +64,6 @@ class ProjectController extends Controller
      */
     public function show(Project $project)
     {
-
-        
     }
 
     /**
@@ -113,6 +111,12 @@ class ProjectController extends Controller
      */
     public function destroy(Project $project)
     {
-        //
+        try {
+            $project->delete();
+            return redirect()->back()->with('success', 'Project delete succesfully!');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return redirect()->back()->with('error', 'System error!' . $e->getMessage());
+        }
     }
 }
