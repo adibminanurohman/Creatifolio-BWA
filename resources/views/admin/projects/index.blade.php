@@ -14,17 +14,19 @@
                 </a>
                 <hr class="my-10">
                 <div class="flex flex-col gap-y-5">
+
+                    @forelse($projects as $project)
                     {{-- melakukan foreach data dari table projects --}}
                     <div class="item-project flex flex-row items-center justify-between">
                         <div class="flex flex-row items-center gap-x-5">
-                            <img src="https://images.unsplash.com/photo-1721332149346-00e39ce5c24f?q=80&w=1472&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+                            <img src="{{ Storage::url($project->cover) }}"
                                 alt="" class="object-cover w-[120px] h-[90px] rounded-2xl">
                             <div class="flex flex-col gap-y-1">
                                 <h3 class="font-bold text-xl">
-                                    Portoku creative folio
+                                    {{ $project->name }}
                                 </h3>
                                 <p class="text-sm text-slate-400">
-                                    Website Development
+                                    {{ $project->category }}
                                 </p>
                             </div>
                         </div>
@@ -37,7 +39,7 @@
                             </a>
                         </div>
                         <div class="flex flex-row items-center gap-x-2">
-                            <a href="" class="py-3 px-5 rounded-full bg-indigo-500 text-white">
+                            <a href="{{ route('admin.projects.edit', $project) }}" class="py-3 px-5 rounded-full bg-indigo-500 text-white">
                                 Edit
                             </a>
                             <a href="" class="py-3 px-5 rounded-full bg-red-500 text-white">
@@ -45,6 +47,11 @@
                             </a>
                         </div>
                     </div>
+                    @empty
+                    <p>
+                        Belum ada project tersedia
+                    </p>
+                    @endforelse
                 </div>
             </div>
         </div>

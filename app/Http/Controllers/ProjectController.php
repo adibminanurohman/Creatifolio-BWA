@@ -14,7 +14,10 @@ class ProjectController extends Controller
      */
     public function index()
     {
-        return view('admin.projects.index');
+        $projects = Project::orderBy('id', 'desc')->get();
+        return view('admin.projects.index', [
+            'projects' => $projects
+        ]);
     }
 
     /**
@@ -33,7 +36,7 @@ class ProjectController extends Controller
         // dd($request->all());
         $validated = $request->validate([
             'name' => 'required|string|max:255',
-            'category' => 'required|string|in:Website Development, App Development, UI/UX Design',
+            'category' => 'required|string',
             'cover' => 'required|image|mimes:png,jpg|max:2048',
             'about' => 'required|string|max:65535'
         ]);
@@ -61,7 +64,8 @@ class ProjectController extends Controller
      */
     public function show(Project $project)
     {
-        //
+
+        
     }
 
     /**
@@ -69,7 +73,9 @@ class ProjectController extends Controller
      */
     public function edit(Project $project)
     {
-        //
+        return view('admin.projects.edit', [
+            'project' => $project
+        ]);
     }
 
     /**
@@ -77,7 +83,29 @@ class ProjectController extends Controller
      */
     public function update(Request $request, Project $project)
     {
-        //
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'category' => 'required|string',
+            'cover' => 'sometimes|image|mimes:png,jpg|max:2048',
+            'about' => 'required|string|max:65535'
+        ]);
+
+
+        DB::beginTransaction();
+
+        try {
+            if ($request->hasFile('cover')) {
+                $path = $request->file('cover')->store('projects', 'public');
+                $validated['cover'] = $path;
+            }
+            $validated['slug'] = Str::slug($request->name);
+            $project->update($validated);
+            DB::commit();
+            return redirect()->route('admin.projects.index')->with('success', 'Project update succesfully!');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return redirect()->back()->with('error', 'System error!' . $e->getMessage());
+        }
     }
 
     /**
